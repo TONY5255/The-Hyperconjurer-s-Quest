@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hyperconjurer's Quest - Interactive Chemistry</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2ff;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #3a3a9d;
+    }
+    .level {
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: #e8ecff;
+      border-radius: 8px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .correct { color: green; }
+    .wrong { color: red; }
+    #progressBar {
+      height: 20px;
+      background-color: #dfe4ff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    #progress {
+      height: 100%;
+      width: 0%;
+      background-color: #3a3a9d;
+      transition: width 0.4s ease;
+    }
+    .drag-container {
+      display: flex;
+      gap: 20px;
+    }
+    .draggable {
+      padding: 10px;
+      background-color: #3a3a9d;
+      color: white;
+      cursor: grab;
+      border-radius: 5px;
+    }
+    .drop-zone {
+      padding: 30px;
+      background-color: #e8ecff;
+      border-radius: 8px;
+      text-align: center;
+    }
+    svg {
+      width: 100px;
+    }
+    .electron {
+      position: absolute;
+      animation: moveElectron 2s infinite alternate ease-in-out;
+    }
+    @keyframes moveElectron {
+      from { transform: translateX(0px); }
+      to { transform: translateX(50px); }
+    }
+  </style>
+  <script>
+    function checkAnswer(level, correctId) {
+      const selected = document.querySelector('input[name="q'+level+'"]:checked');
+      const feedback = document.getElementById("feedback" + level);
+      if (selected) {
+        if (selected.id === correctId) {
+          feedback.textContent = "✅ Correct! Level unlocked.";
+          feedback.className = "feedback correct";
+        } else {
+          feedback.textContent = "❌ Incorrect. Think conceptually.";
+          feedback.className = "feedback wrong";
+        }
+      } else {
+        feedback.textContent = "Please select an answer.";
+        feedback.className = "feedback wrong";
+      }
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drag(event) {
+      event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text");
+      event.target.appendChild(document.getElementById(data));
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>🌟 Hyperconjurer's Quest</h1>
+    <p>Master hyperconjugation with interactive levels!</p>
+
+    <div id="progressBar"><div id="progress"></div></div>
+
+    <div class="level">
+      <h2>Drag & Drop Challenge: Stability Duel</h2>
+      <p>Match the correct molecule to its stability level.</p>
+      <div class="drag-container">
+        <div id="methyl" class="draggable" draggable="true" ondragstart="drag(event)">Methyl carbocation</div>
+        <div id="tertiary" class="draggable" draggable="true" ondragstart="drag(event)">Tertiary carbocation</div>
+      </div>
+      <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+        Drop here to check stability level!
+      </div>
+    </div>
+
+    <div class="level">
+      <h2>Electron Flow Animation</h2>
+      <svg>
+        <circle cx="50" cy="50" r="10" fill="red" class="electron"></circle>
+      </svg>
+      <p>Observe how electrons move in hyperconjugation!</p>
+    </div>
+
+    <div class="level">
+      <h2>Interactive Bond Diagram</h2>
+      <svg>
+        <line x1="10" y1="30" x2="90" y2="30" stroke="black" stroke-width="2"></line>
+        <circle cx="10" cy="30" r="5" fill="blue"></circle>
+        <circle cx="90" cy="30" r="5" fill="blue"></circle>
+      </svg>
+      <p>Visualizing bond interactions dynamically!</p>
+    </div>
+
+    <div class="level">
+      <h2>Level 3: Stability Duel</h2>
+      <p class="question">Why is a tertiary carbocation more stable?</p>
+      <label><input type="radio" name="q3" id="q3a"> Due to steric repulsion</label><br>
+      <label><input type="radio" name="q3" id="q3b"> Because of inductive effect alone</label><br>
+      <label><input type="radio" name="q3" id="q3c"> Because of hyperconjugation from multiple C-H bonds</label><br>
+      <button onclick="checkAnswer(3, 'q3c')">Submit</button>
+      <div id="feedback3" class="feedback"></div>
+    </div>
+  </div>
+</body>
+</html>
